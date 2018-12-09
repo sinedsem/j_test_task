@@ -38,7 +38,7 @@ public class ExternalSorter {
                     buffer.clear();
                 } while (line != null);
 
-            } catch (EOFException oef) {
+            } catch (EOFException e) {
                 if (buffer.size() > 0) {
                     tempFiles.add(sortAndSave(buffer));
                     buffer.clear();

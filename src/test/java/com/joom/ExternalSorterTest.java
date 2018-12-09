@@ -8,6 +8,7 @@ import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.util.Random;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class ExternalSorterTest {
@@ -23,15 +24,29 @@ public class ExternalSorterTest {
         ExternalSorter externalSorter = new ExternalSorter();
         externalSorter.sort(source, target, 10_000);
 
+        int counter = 1;
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(target)))) {
             String prevLine = reader.readLine();
             String line;
             while ((line = reader.readLine()) != null) {
+                counter++;
                 assertTrue(prevLine.compareTo(line) < 0);
                 prevLine = line;
             }
         }
+        assertEquals(1000, counter);
+    }
 
+    @Test
+    public void testEmptyFile() throws Exception {
+        File source = File.createTempFile("test", "source");
+        File target = File.createTempFile("test", "target");
+
+        FileGenerator generator = new FileGenerator(new Random(1));
+        generator.generateFile(0, 100, source);
+
+        ExternalSorter externalSorter = new ExternalSorter();
+        externalSorter.sort(source, target, 10_000);
     }
 
 }
